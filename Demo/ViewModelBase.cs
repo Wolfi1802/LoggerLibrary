@@ -1,14 +1,23 @@
-﻿using System;
+﻿using LoggerLibrary;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Demo
 {
-    public abstract class ViewModelBase : INotifyPropertyChanged
+    public abstract class ViewModelBase : LoggerBase, INotifyPropertyChanged
     {
+
+        public ViewModelBase() : base("DemoLog")
+        {
+
+        }
+
         public const string DEFAULT_STRING = "";
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -44,5 +53,37 @@ namespace Demo
 
             OnPropertyChanged(propertyName);
         }
+
+        internal void TestLogs()
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                Thread thread = new Thread(() =>
+                {
+                    for (int i = 0; i < 10; i++)
+                    {
+                        this.Log($"Thread NR{j} - Log NR{i} Hallo World", false);
+                    }
+                });
+
+                thread.Start();
+                Thread.Sleep(1000);
+            }
+        }
+
+        internal void Log(string log, bool enhancedLog)
+        {
+            var StackTreeMethod = this.GetStacktreeMethodName();
+
+            if (enhancedLog)
+                base.WriteEnhanced(log, StackTreeMethod);
+            else
+                base.WriteLog(log, StackTreeMethod);
+        }
+        internal string GetStacktreeMethodName()
+        {
+            return Environment.StackTrace.Split("\r".ToCharArray())[3];//[TS]call out of mainclass => index 4
+        }
+
     }
 }

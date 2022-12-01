@@ -69,7 +69,7 @@ namespace LoggerLibrary
                 base.WriteLog(log, StackTreeMethod);
         }
 
-        internal override string GetStacktreeMethodName()
+        internal string GetStacktreeMethodName()
         {
             return Environment.StackTrace.Split("\r".ToCharArray())[3];//[TS]call out of mainclass => index 4
         }

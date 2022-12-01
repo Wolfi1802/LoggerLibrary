@@ -5,12 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Demo"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <ListView>
-            <GridView>
-                
-            </GridView>
+        Title="MainWindow" Height="550" Width="800" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+
+    <Window.DataContext>
+        <local:MainWindowViewModel x:Name="MainWindowViewModel"/>
+    </Window.DataContext>
+    
+    <StackPanel>
+        <Button Content="Schreibe test logs" Command="{Binding TestCommand}" Margin="10"/>
+        
+        <ListView ItemsSource="{Binding ItemsSource}" Height="490" Width="800">
+            <ListView.View>
+                <GridView AllowsColumnReorder="False">
+                    <GridViewColumn Header="Time" DisplayMemberBinding="{Binding Time}"/>
+                    <GridViewColumn Header="LogType" DisplayMemberBinding="{Binding LogType}"/>
+                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}"/>
+                    <GridViewColumn Header="Stacktrace" DisplayMemberBinding="{Binding Stacktrace}"/>
+                    <GridViewColumn Header="Exception" DisplayMemberBinding="{Binding Exception}"/>
+                </GridView>
+            </ListView.View>
         </ListView>
-    </Grid>
+    </StackPanel>
 </Window>

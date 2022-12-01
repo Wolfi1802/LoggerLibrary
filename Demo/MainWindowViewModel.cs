@@ -2,6 +2,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Threading;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Demo
@@ -10,33 +11,22 @@ namespace Demo
     {
         public MainWindowViewModel()
         {
+            this.ItemsSource = new ObservableCollection<LogModell>();
+
             GlobalLibraryValues.LibaryCaller += (callerType, message) =>
             {
-                //Debug.WriteLine($"Library Log : {callerType} - {message}");
+                //Some weird Logs from Lib are here.
             };
 
             GlobalLibraryValues.LogsCaller += (log) =>
             {
-
-            };
-
-            TestLogs();
-        }
-        private static void TestLogs()
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                Thread thread = new Thread(() =>
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    for (int i = 0; i < 10; i++)
-                    {
-                        //this.Log($"Thread NR{j} - Log NR{i} Hallo World", false);//TODO[TS]LOG
-                    }
-                });
-
-                thread.Start();
-                Thread.Sleep(1000);
-            }
+                    log.Message = log.Message.Replace("\n", string.Empty);
+                    log.Stacktrace = log.Stacktrace.Replace("\n", string.Empty);
+                    ItemsSource.Add(log);
+                }));
+            };
         }
 
         public ObservableCollection<LogModell> ItemsSource
@@ -49,13 +39,13 @@ namespace Demo
         {
             try
             {
-
+                Thread thread = new Thread(() => { base.TestLogs(); });
+                thread.Start();
             }
             catch (Exception ex)
             {
 
             }
         });
-
     }
 }

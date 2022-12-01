@@ -6,14 +6,12 @@ namespace LoggerLibrary
 {
     public abstract class LoggerBase : ILogger
     {
-        internal abstract string GetStacktreeMethodName();
-
         internal const int LOG_DAYS_TO_SAVE = 7;
         internal readonly string LoggerName;
 
         private LogQue GlobalLogQueInstance;
 
-        internal LoggerBase(string LoggerName, string path = "")
+        public LoggerBase(string LoggerName, string path = "")
         {
             this.GlobalLogQueInstance = LogQue.GetInstance();
             this.LoggerName = LoggerName;
