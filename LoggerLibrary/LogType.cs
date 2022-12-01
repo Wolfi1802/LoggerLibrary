@@ -5,10 +5,12 @@ using System.Text;
 
 namespace LoggerLibrary
 {
-    public enum MessageCallerEnum
+    public enum LogType
     {
-        Message,
+        Default,
         Exception,
-        Log
+        Log,
+        Enhanced,
+        Debug
     }
 }

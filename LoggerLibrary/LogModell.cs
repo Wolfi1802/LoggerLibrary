@@ -8,7 +8,7 @@ namespace LoggerLibrary
         {
         }
 
-        public LogModell(string message, string stacktrace, DateTime? time, Exception ex)
+        public LogModell(string message, string stacktrace, DateTime? time, Exception ex, LogType logType)
         {
             if (!string.IsNullOrEmpty(message))
                 this.Message = message;
@@ -23,6 +23,8 @@ namespace LoggerLibrary
 
             if (ex != null)
                 this.Exception = ex;
+
+            this.LogType = logType;
         }
 
         public Exception Exception { set; get; }
@@ -32,5 +34,7 @@ namespace LoggerLibrary
         public string Message { set; get; }
 
         public DateTime Time { set; get; }
+
+        public LogType LogType { set; get; }
     }
 }

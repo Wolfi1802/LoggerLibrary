@@ -5,6 +5,16 @@ namespace LoggerLibrary
 {
     internal static class GlobalLibraryValues
     {
+        /// <summary>
+        /// Dieses Event kommuniziert nach außen wenn etwas im inneren passiert.
+        /// </summary>
+        public static Action<LogType, string> LibaryCaller { set; get; }
+
+        /// <summary>
+        /// Dieses Event kommuniziert nach außen wenn ein Log geschrieben wird.
+        /// </summary>
+        public static Action<LogModell> LogsCaller { set; get; }
+
         private static string default_Path;
         private static bool AutoCleanUp;
         private static short AutoCleanUpDays;
@@ -70,20 +80,14 @@ namespace LoggerLibrary
             fileType = path;
         }
 
-        internal static void TriggerMessageCaller(string message)
+        internal static void RaiseMessageAction(string message)
         {
-            MainClass.MessageCaller?.Invoke(MessageCallerEnum.Message, $"{DateTime.Now} | {message}");
+            LibaryCaller?.Invoke(LogType.Log, $"{DateTime.Now} | {message}");
         }
 
-        internal static void TriggerMessageCaller(Exception message)
+        internal static void RaiseExceptionEvent(Exception message)
         {
-            MainClass.MessageCaller?.Invoke(MessageCallerEnum.Exception, $"{DateTime.Now} | {message.Message}");
+            LibaryCaller?.Invoke(LogType.Exception, $"{DateTime.Now} | {message.Message}");
         }
-
-        internal static void TriggerMessageCallerForLog(string message)
-        {
-            MainClass.MessageCaller?.Invoke(MessageCallerEnum.Log, $"{DateTime.Now} | {message}");
-        }
-
     }
 }

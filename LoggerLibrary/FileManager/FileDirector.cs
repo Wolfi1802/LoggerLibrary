@@ -69,11 +69,11 @@ namespace LoggerLibrary.FileManager
             }
             catch (UnauthorizedAccessException UAex)
             {
-                GlobalLibraryValues.TriggerMessageCaller($"{nameof(FileDirector)}, {nameof(GetFilesPath)}, {UAex}, Access denied to [{directory.Name}]");
+                GlobalLibraryValues.RaiseMessageAction($"{nameof(FileDirector)}, {nameof(GetFilesPath)}, {UAex}, Access denied to [{directory.Name}]");
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller($"{nameof(FileDirector)}, {nameof(GetFilesPath)}, {ex}");
+                GlobalLibraryValues.RaiseMessageAction($"{nameof(FileDirector)}, {nameof(GetFilesPath)}, {ex}");
             }
             return filesFound;
         }

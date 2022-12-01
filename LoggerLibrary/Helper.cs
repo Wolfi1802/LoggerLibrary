@@ -37,8 +37,7 @@ namespace LoggerLibrary
             if (!ValidateParams(text, path))
                 throw new Exception($"{nameof(Helper)},{nameof(SaveText)} in {nameof(ValidateParams)} ist eine Überprüfung Fehlerhaft!");
 
-            GlobalLibraryValues.TriggerMessageCaller($"Write text [{text.Length}] into {path}");
-            GlobalLibraryValues.TriggerMessageCallerForLog(text);
+            GlobalLibraryValues.RaiseMessageAction($"Write text [{text.Length}] into {path}");
 
             lock (lockObject)
             {
@@ -70,7 +69,7 @@ namespace LoggerLibrary
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller($"{nameof(Helper)},{nameof(TryEnsurePathExists)},{ex}");
+                GlobalLibraryValues.RaiseMessageAction($"{nameof(Helper)},{nameof(TryEnsurePathExists)},{ex}");
                 return false;
             }
             return true;
@@ -87,11 +86,11 @@ namespace LoggerLibrary
                 if (!Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
-                    GlobalLibraryValues.TriggerMessageCaller($"Create {directory}");
+                    GlobalLibraryValues.RaiseMessageAction($"Create {directory}");
                 }
 
                 File.Create(path);
-                GlobalLibraryValues.TriggerMessageCaller($"Create {path}");
+                GlobalLibraryValues.RaiseMessageAction($"Create {path}");
             }
         }
 
@@ -118,7 +117,7 @@ namespace LoggerLibrary
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller(ex);
+                GlobalLibraryValues.RaiseExceptionEvent(ex);
                 return null;
             }
         }

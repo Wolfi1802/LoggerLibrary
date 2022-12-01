@@ -52,7 +52,7 @@
     <Compile Include="LogQue.cs" />
     <Compile Include="MainClass.cs" />
     <Compile Include="GlobalLibraryValues.cs" />
-    <Compile Include="MessageCallerEnum.cs" />
+    <Compile Include="LogType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

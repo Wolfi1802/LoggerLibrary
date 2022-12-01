@@ -19,7 +19,7 @@ namespace LoggerLibrary
         ~Logger()
         {
             Dispose(false);
-            GlobalLibraryValues.TriggerMessageCaller($"Kill {nameof(Logger)}");
+            GlobalLibraryValues.RaiseMessageAction($"Kill {nameof(Logger)}");
         }
 
         public void Dispose()
@@ -31,7 +31,7 @@ namespace LoggerLibrary
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller(ex);
+                GlobalLibraryValues.RaiseExceptionEvent(ex);
             }
         }
 
@@ -47,7 +47,7 @@ namespace LoggerLibrary
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller(ex);
+                GlobalLibraryValues.RaiseExceptionEvent(ex);
             }
         }
 
@@ -59,7 +59,7 @@ namespace LoggerLibrary
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller(ex);
+                GlobalLibraryValues.RaiseExceptionEvent(ex);
             }
         }
 
@@ -87,7 +87,7 @@ namespace LoggerLibrary
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller(ex);
+                GlobalLibraryValues.RaiseExceptionEvent(ex);
             }
         }
 
@@ -105,7 +105,7 @@ namespace LoggerLibrary
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller(ex);
+                GlobalLibraryValues.RaiseExceptionEvent(ex);
             }
         }
     }

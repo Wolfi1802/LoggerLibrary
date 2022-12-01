@@ -7,6 +7,11 @@ namespace LoggerLibrary
 {
     internal sealed class LogQue
     {
+        private static readonly Dictionary<string, List<LogModell>> logQue = new Dictionary<string, List<LogModell>>();
+        private readonly object loggingQueLockObject = new object();
+        private Thread logThread;
+        private bool LogActive = false;
+        private bool logThreadEnable = true;
         private static LogQue instance;
 
         internal static LogQue GetInstance()
@@ -16,13 +21,6 @@ namespace LoggerLibrary
 
             return instance;
         }
-
-        private static readonly Dictionary<string, List<LogModell>> logQue = new Dictionary<string, List<LogModell>>();
-        private readonly object loggingQueLockObject = new object();
-        private bool LogActive = false;
-        private Thread logThread;
-
-        private bool logThreadEnable = true;
 
         private LogQue()
         {
@@ -35,7 +33,7 @@ namespace LoggerLibrary
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller(ex);
+                GlobalLibraryValues.RaiseExceptionEvent(ex);
             }
         }
 
@@ -57,12 +55,12 @@ namespace LoggerLibrary
                     this.logThread.IsBackground = true;
                     this.logThread.Start();
 
-                    GlobalLibraryValues.TriggerMessageCaller($"{DateTime.Now}|{nameof(LogQue)}|{nameof(StartLogThread)} has started");
+                    GlobalLibraryValues.RaiseMessageAction($"{DateTime.Now}|{nameof(LogQue)}|{nameof(StartLogThread)} has started");
                 }
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller(ex);
+                GlobalLibraryValues.RaiseExceptionEvent(ex);
             }
         }
 
@@ -70,6 +68,8 @@ namespace LoggerLibrary
         {
             try
             {
+                GlobalLibraryValues.LogsCaller?.Invoke(model);
+
                 if (this.logThread != null)
                 {
                     lock (this.loggingQueLockObject)
@@ -78,7 +78,7 @@ namespace LoggerLibrary
                             logQue.Add(logfileName, new List<LogModell>());
 
                         logQue[logfileName].Add(model);
-                        GlobalLibraryValues.TriggerMessageCaller($"Add Message to [{nameof(AddLogToLogQue)}] [{logfileName}] ");
+                        GlobalLibraryValues.RaiseMessageAction($"Add Message to [{nameof(AddLogToLogQue)}] [{logfileName}] ");
                     }
                 }
                 else
@@ -89,7 +89,7 @@ namespace LoggerLibrary
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller(ex.Message);
+                GlobalLibraryValues.RaiseMessageAction(ex.Message);
             }
         }
 
@@ -105,7 +105,7 @@ namespace LoggerLibrary
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller(ex);
+                GlobalLibraryValues.RaiseExceptionEvent(ex);
                 return false;
             }
         }
@@ -121,7 +121,7 @@ namespace LoggerLibrary
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller(ex.Message);
+                GlobalLibraryValues.RaiseMessageAction(ex.Message);
             }
         }
 
@@ -138,7 +138,7 @@ namespace LoggerLibrary
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller(ex.Message);
+                GlobalLibraryValues.RaiseMessageAction(ex.Message);
             }
         }
 
@@ -164,14 +164,14 @@ namespace LoggerLibrary
 
                     if (remainingEntries == 0 && !this.LogActive)
                     {
-                        GlobalLibraryValues.TriggerMessageCaller($"{nameof(LogWorker)} ends with 0 remaining Logs");
+                        GlobalLibraryValues.RaiseMessageAction($"{nameof(LogWorker)} ends with 0 remaining Logs");
                         break;
                     }
                 }
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller(ex.Message);
+                GlobalLibraryValues.RaiseMessageAction(ex.Message);
             }
         }
 
@@ -183,7 +183,7 @@ namespace LoggerLibrary
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller(ex.Message);
+                GlobalLibraryValues.RaiseMessageAction(ex.Message);
                 return null;
             }
         }
@@ -196,7 +196,7 @@ namespace LoggerLibrary
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller(ex.Message);
+                GlobalLibraryValues.RaiseMessageAction(ex.Message);
                 return null;
             }
         }
@@ -216,13 +216,13 @@ namespace LoggerLibrary
                     }
                 }
 
-                GlobalLibraryValues.TriggerMessageCaller($"{filesToDelete.Count} Logs delete done");
+                GlobalLibraryValues.RaiseMessageAction($"{filesToDelete.Count} Logs delete done");
 
                 return true;
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller(ex);
+                GlobalLibraryValues.RaiseExceptionEvent(ex);
                 return false;
             }
         }
@@ -245,13 +245,13 @@ namespace LoggerLibrary
                     }
                 }
 
-                GlobalLibraryValues.TriggerMessageCaller($"Found {filesToDelete.Count} Logs to delete");
+                GlobalLibraryValues.RaiseMessageAction($"Found {filesToDelete.Count} Logs to delete");
 
                 return filesToDelete;
             }
             catch (Exception ex)
             {
-                GlobalLibraryValues.TriggerMessageCaller(ex);
+                GlobalLibraryValues.RaiseExceptionEvent(ex);
                 return null;
             }
         }
