@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace LoggerLibrary
 {
-    internal abstract class LoggerBase : ILogger
+    public abstract class LoggerBase : ILogger
     {
         internal abstract string GetStacktreeMethodName();
 

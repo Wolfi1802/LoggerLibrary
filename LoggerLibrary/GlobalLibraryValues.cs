@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace LoggerLibrary
 {
-    internal static class GlobalLibraryValues
+    public static class GlobalLibraryValues
     {
         /// <summary>
         /// Dieses Event kommuniziert nach außen wenn etwas im inneren passiert.

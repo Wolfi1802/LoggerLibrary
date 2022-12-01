@@ -26,6 +26,7 @@ namespace LoggerLibrary
 
         private static void Main(string[] args)
         {
+#if DEBUG
             GlobalLibraryValues.LibaryCaller += (callerType, message) =>
             {
                 //Debug.WriteLine($"Library Log : {callerType} - {message}");
@@ -38,6 +39,7 @@ namespace LoggerLibrary
             TestLogs();
 
             Console.ReadLine();
+#endif
         }
 
         private static void TestLogs()
@@ -57,7 +59,7 @@ namespace LoggerLibrary
             }
         }
 
-        public void Log(string log, bool enhancedLog)
+        private void Log(string log, bool enhancedLog)
         {
             var StackTreeMethod = this.GetStacktreeMethodName();
 
