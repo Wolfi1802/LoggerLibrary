@@ -17,7 +17,7 @@ namespace LoggerLibrary
             return instance;
         }
 
-        private static readonly Dictionary<string, List<string>> logQue = new Dictionary<string, List<string>>();
+        private static readonly Dictionary<string, List<LogModell>> logQue = new Dictionary<string, List<LogModell>>();
         private readonly object loggingQueLockObject = new object();
         private bool LogActive = false;
         private Thread logThread;
@@ -66,7 +66,7 @@ namespace LoggerLibrary
             }
         }
 
-        internal void AddLogToLogQue(string logfileName, string message)
+        internal void AddLogToLogQue(string logfileName, LogModell model)
         {
             try
             {
@@ -75,16 +75,16 @@ namespace LoggerLibrary
                     lock (this.loggingQueLockObject)
                     {
                         if (!logQue.ContainsKey(logfileName))
-                            logQue.Add(logfileName, new List<string>());
+                            logQue.Add(logfileName, new List<LogModell>());
 
-                        logQue[logfileName].Add(message);
-                        GlobalLibraryValues.TriggerMessageCaller($"Add Message[{message.Length}] to [{nameof(AddLogToLogQue)}] [{logfileName}] ");
+                        logQue[logfileName].Add(model);
+                        GlobalLibraryValues.TriggerMessageCaller($"Add Message to [{nameof(AddLogToLogQue)}] [{logfileName}] ");
                     }
                 }
                 else
                 {
                     this.StartLogThread();
-                    this.AddLogToLogQue(logfileName, message);
+                    this.AddLogToLogQue(logfileName, model);
                 }
             }
             catch (Exception ex)
@@ -125,7 +125,7 @@ namespace LoggerLibrary
             }
         }
 
-        private void WriteLogIntoQue(List<string> errorQue, string logfileName)
+        private void WriteLogIntoQue(List<LogModell> errorQue, string logfileName)
         {
             try
             {
@@ -154,9 +154,9 @@ namespace LoggerLibrary
 
                     lock (this.loggingQueLockObject)
                     {
-                        foreach (KeyValuePair<string, List<string>> item in logQue)
+                        foreach (KeyValuePair<string, List<LogModell>> item in logQue)
                         {
-                            List<string> que = item.Value;
+                            List<LogModell> que = item.Value;
                             this.WriteLogIntoQue(que, item.Key);
                             remainingEntries += item.Value.Count;
                         }
@@ -179,8 +179,7 @@ namespace LoggerLibrary
         {
             try
             {
-                var fileName = string.Format("{0} {1:yyyy-MM-dd}", logfileName, DateTime.Now);
-                return $"{fileName}{GlobalLibraryValues.GetFileType()}";
+                return $"{logfileName}{GlobalLibraryValues.GetFileType()}";
             }
             catch (Exception ex)
             {

@@ -48,6 +48,7 @@
     <Compile Include="ILogger.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="LoggerBase.cs" />
+    <Compile Include="LogModell.cs" />
     <Compile Include="LogQue.cs" />
     <Compile Include="MainClass.cs" />
     <Compile Include="GlobalLibraryValues.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 
@@ -25,10 +26,11 @@ namespace LoggerLibrary
         public void Log(string log, bool enhancedLog)
         {
             var StackTreeMethod = this.GetStacktreeMethodName();
-            base.WriteLog(log, StackTreeMethod);
 
             if (enhancedLog)
                 base.WriteEnhanced(log, StackTreeMethod);
+            else
+                base.WriteLog(log, StackTreeMethod);
 
             GlobalLibraryValues.TriggerMessageCaller($"{log},{StackTreeMethod}");
         }
@@ -36,13 +38,23 @@ namespace LoggerLibrary
         private static void Main(string[] args)
         {
             GetInstance().PrePareLogging();
-            for (int i = 0; i < 1000; i++)
+
+            for (int j = 0; j < 3; j++)
             {
-                GetInstance().Log("Hallo World", false);
+                Thread thread = new Thread(() =>
+                {
+                    for (int i = 0; i < 10; i++)
+                    {
+                        GetInstance().Log($"Thread NR{j} - Log NR{i} Hallo World", false);
+                    }
+                });
+
+                thread.Start();
+                Thread.Sleep(1000);
             }
 
-            GetInstance().Log("Hallo World", false);
-            Thread.Sleep(5000);
+
+            Console.ReadLine();
         }
 
         internal override string GetStacktreeMethodName()

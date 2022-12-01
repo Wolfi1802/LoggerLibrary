@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace LoggerLibrary
 {
@@ -19,7 +20,6 @@ namespace LoggerLibrary
 
             if (!string.IsNullOrEmpty(path))
                 GlobalLibraryValues.SetPath(path);
-
         }
 
 
@@ -30,41 +30,23 @@ namespace LoggerLibrary
 
         public void WriteLog(string message, string StackTreeMethod)
         {
-            this.GlobalLogQueInstance.AddLogToLogQue(this.LoggerName, this.Formate(message, StackTreeMethod));
+            this.GlobalLogQueInstance.AddLogToLogQue(this.LoggerName, new LogModell(message, StackTreeMethod, null, null));
         }
 
         public void WriteException(string message, string StackTreeMethod, Exception exPara = null)
         {
-            this.GlobalLogQueInstance.AddLogToLogQue(this.LoggerName, this.Formate(message, StackTreeMethod, exPara));
+            this.GlobalLogQueInstance.AddLogToLogQue(this.LoggerName, new LogModell(message, StackTreeMethod, null, exPara));
         }
 
         public void WriteEnhanced(string message, string StackTreeMethod, Exception exPara = null)
         {
             message += new StackTrace().GetFrames();
-            this.GlobalLogQueInstance.AddLogToLogQue(this.LoggerName, this.Formate(message, StackTreeMethod, exPara));
+            this.GlobalLogQueInstance.AddLogToLogQue(this.LoggerName, new LogModell(message, StackTreeMethod, null, exPara));
         }
 
         public void WriteDebug(string message, string StackTreeMethod, Exception exPara = null)
         {
-            this.GlobalLogQueInstance.AddLogToLogQue(this.LoggerName, this.Formate(message, StackTreeMethod, exPara));
-        }
-
-        private string Formate(string message, string StackTreeMethod, Exception exPara = null)
-        {
-            try
-            {
-                string formatedMessage = $"T\t{DateTime.Now}\r\nM\t{StackTreeMethod.Replace("\n", string.Empty)}\r\nI\t{message}\r\n";
-
-                if (exPara != null)
-                    formatedMessage += $"E\t{exPara}\r\n";
-
-                return formatedMessage;
-            }
-            catch (Exception ex)
-            {
-                GlobalLibraryValues.TriggerMessageCaller(ex);
-                return null;
-            }
-        }
+            this.GlobalLogQueInstance.AddLogToLogQue(this.LoggerName, new LogModell(message, StackTreeMethod, null, exPara));
+        }      
     }
 }

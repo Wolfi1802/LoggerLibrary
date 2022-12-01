@@ -1,17 +1,26 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace LoggerLibrary
 {
-    internal  static class Helper
+    internal static class Helper
     {
-        internal static void SaveText(string text, string path, string fileName, bool append = true)
+        private static object lockObject = new object();
+
+        internal static void SaveText(LogModell modell, string path, string fileName)
         {
-            SaveText(text, Path.Combine(path, fileName), append);
+            SaveText(FormateLog(modell), Path.Combine(path, fileName));
         }
 
-        internal static void SaveText(string text, string path, bool append = true)
+        internal static void SaveText(string text, string path, string fileName)
+        {
+            SaveText(text, Path.Combine(path, fileName));
+        }
+
+        internal static void SaveText(string text, string path)
         {
             if (text == null)
                 throw new ArgumentNullException($"{nameof(Helper)},{nameof(SaveText)}{nameof(text)} ist null");
@@ -28,14 +37,14 @@ namespace LoggerLibrary
             if (!ValidateParams(text, path))
                 throw new Exception($"{nameof(Helper)},{nameof(SaveText)} in {nameof(ValidateParams)} ist eine Überprüfung Fehlerhaft!");
 
-            StreamWriter writer;
-
             GlobalLibraryValues.TriggerMessageCaller($"Write text [{text.Length}] into {path}");
             GlobalLibraryValues.TriggerMessageCallerForLog(text);
 
-            using (writer = new StreamWriter(path, append, Encoding.UTF8))
+            lock (lockObject)
             {
-                writer.WriteLine(text);
+                var path2 = new DirectoryInfo(Path.GetFullPath(path)).FullName;//Aus irgendeinem grund wird der pfad sonst umgewandelt mit falschen zeichen im pfad...
+
+                File.AppendAllText(path2, text);
             }
         }
 
@@ -86,5 +95,32 @@ namespace LoggerLibrary
             }
         }
 
+        /// <summary>
+        /// Formatiert nach folgendem Muster:
+        /// <para>Types: "\n[DateTime][string][String][Exception]"</para>
+        /// <para>Names: "\n[Time][Message][Stacktrace][Exception]"</para>
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private static string FormateLog(LogModell model)
+        {
+            try
+            {
+                string formatedMessage = $"\n[{model.Time}] [{model.Message}]";
+
+                if(!string.IsNullOrEmpty(model.Stacktrace))
+                    formatedMessage+= $" [{model.Stacktrace.Replace("\n", string.Empty)}]";
+
+                if (model.Exception != null)
+                    formatedMessage += $" [{model.Exception}]";
+
+                return formatedMessage;
+            }
+            catch (Exception ex)
+            {
+                GlobalLibraryValues.TriggerMessageCaller(ex);
+                return null;
+            }
+        }
     }
 }
