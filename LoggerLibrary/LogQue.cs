@@ -69,6 +69,7 @@ namespace LoggerLibrary
             try
             {
                 GlobalLibraryValues.LogsCaller?.Invoke(model);
+                GlobalLibraryValues.LogList.Add(model);
 
                 if (this.logThread != null)
                 {

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace LoggerLibrary
 {
@@ -14,6 +14,8 @@ namespace LoggerLibrary
         /// Dieses Event kommuniziert nach außen wenn ein Log geschrieben wird.
         /// </summary>
         public static Action<LogModell> LogsCaller { set; get; }
+
+        public static List<LogModell> LogList { private set; get; } = new List<LogModell>();
 
         private static string default_Path;
         private static bool AutoCleanUp;
